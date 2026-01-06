@@ -1,10 +1,17 @@
 name: Version Bump
 
 on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'data.db'
   workflow_dispatch:
     inputs:
       bump_type:
-        description: 'Version bump type (patch, minor, major)'
+        description: '版本提升类型 (patch, minor, major)'
         required: true
         default: 'patch'
         type: choice
@@ -35,10 +42,13 @@ jobs:
         id: calculate_version
         run: |
           OLD_VERSION=${{ steps.get_version.outputs.current_version }}
+          BUMP_TYPE="${{ github.event.inputs.bump_type }}"
+          if [ -z "$BUMP_TYPE" ]; then BUMP_TYPE="patch"; fi
+          
           IFS='.' read -r major minor patch <<< "$OLD_VERSION"
-          if [ "${{ github.event.inputs.bump_type }}" == "major" ]; then
+          if [ "$BUMP_TYPE" == "major" ]; then
             NEW_VERSION="$((major + 1)).0.0"
-          elif [ "${{ github.event.inputs.bump_type }}" == "minor" ]; then
+          elif [ "$BUMP_TYPE" == "minor" ]; then
             NEW_VERSION="$major.$((minor + 1)).0"
           else
             NEW_VERSION="$major.$minor.$((patch + 1))"

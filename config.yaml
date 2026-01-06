@@ -2,17 +2,18 @@
 sites:
   - name: "xsnvshen"
     url: "https://www.xsnvshen.co/album/hd/147/?scf=com"
-    item_list_selector: "ul.picpos_6_1.layout.camWholeBoxUl > li.min-h-imgall_300"
-    title_selector: ".camLiCon .camLiTitle a"
+    item_list_selector: "li.min-h-imgall_300"
+    title_selector: "a.itemimg"
+    title_attr: "title"
     link_selector: "a.itemimg"
     image_selector: "a.itemimg img"
     is_spa: false
 
   - name: "xiuren.org"
     url: "https://www.xiuren.org/"
-    item_list_selector: "div.excerpts article.excerpt"
-    title_selector: "h2.entry-title a"
-    link_selector: "h2.entry-title a"
+    item_list_selector: "article"
+    title_selector: "h2 a"
+    link_selector: "h2 a"
     image_selector: "a.thumbnail img"
     is_spa: false
 
@@ -26,8 +27,8 @@ sites:
 
   - name: "nshens"
     url: "https://nshens.com/web/category/xiuren"
-    item_list_selector: "a:has(.v-image__image)"
-    title_selector: "div.v-card__text"
+    item_list_selector: 'a[href^="/web/20"]'
+    title_selector: 'div[style*="font-weight: bold"]'
     link_selector: "a"
     image_selector: ".v-image__image"
     is_spa: true
