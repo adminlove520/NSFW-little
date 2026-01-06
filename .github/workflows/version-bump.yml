@@ -1,0 +1,71 @@
+name: Version Bump
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type (patch, minor, major)'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get current version
+        id: get_version
+        run: |
+          VERSION=$(grep '__version__ =' monitor.py | cut -d '"' -f 2)
+          echo "current_version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Calculate new version
+        id: calculate_version
+        run: |
+          OLD_VERSION=${{ steps.get_version.outputs.current_version }}
+          IFS='.' read -r major minor patch <<< "$OLD_VERSION"
+          if [ "${{ github.event.inputs.bump_type }}" == "major" ]; then
+            NEW_VERSION="$((major + 1)).0.0"
+          elif [ "${{ github.event.inputs.bump_type }}" == "minor" ]; then
+            NEW_VERSION="$major.$((minor + 1)).0"
+          else
+            NEW_VERSION="$major.$minor.$((patch + 1))"
+          fi
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update files
+        run: |
+          NEW_VER=${{ steps.calculate_version.outputs.new_version }}
+          OLD_VER=${{ steps.get_version.outputs.current_version }}
+          
+          # Update monitor.py
+          sed -i "s/__version__ = \"$OLD_VER\"/__version__ = \"$NEW_VER\"/" monitor.py
+          
+          # Update README.md badge
+          sed -i "s/version-$OLD_VER-blue/version-$NEW_VER-blue/" README.md
+
+      - name: Update Changelog
+        run: |
+          NEW_VER=${{ steps.calculate_version.outputs.new_version }}
+          DATE=$(date +'%Y-%m-%d')
+          sed -i "s/## \[Unreleased\]/## \[Unreleased\]\n\n## \[$NEW_VER\] - $DATE/" CHANGELOG.md || true
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add monitor.py README.md CHANGELOG.md
+          git commit -m "chore: bump version to ${{ steps.calculate_version.outputs.new_version }}"
+          git push

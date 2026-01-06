@@ -1,0 +1,43 @@
+# 站点配置列表
+sites:
+  - name: "xsnvshen"
+    url: "https://www.xsnvshen.co/album/hd/147/?scf=com"
+    item_list_selector: "ul.picpos_6_1.layout.camWholeBoxUl > li.min-h-imgall_300"
+    title_selector: ".camLiCon .camLiTitle a"
+    link_selector: "a.itemimg"
+    image_selector: "a.itemimg img"
+    is_spa: false
+
+  - name: "xiuren.org"
+    url: "https://www.xiuren.org/"
+    item_list_selector: "div.excerpts article.excerpt"
+    title_selector: "h2.entry-title a"
+    link_selector: "h2.entry-title a"
+    image_selector: "a.thumbnail img"
+    is_spa: false
+
+  - name: "xiutaku"
+    url: "https://xiutaku.com/brand/1"
+    item_list_selector: ".column"
+    title_selector: "a.item-link:not(.popunder)"
+    link_selector: "a.item-link"
+    image_selector: "a.item-link.popunder img"
+    is_spa: false
+
+  - name: "nshens"
+    url: "https://nshens.com/web/category/xiuren"
+    item_list_selector: "a:has(.v-image__image)"
+    title_selector: "div.v-card__text"
+    link_selector: "a"
+    image_selector: ".v-image__image"
+    is_spa: true
+
+# Discord 推送配置
+discord:
+  webhook_url_env: "DISCORD_WEBHOOK_URL"
+  username: "NSFW Monitor"
+  avatar_url: "https://cdn-icons-png.flaticon.com/512/3389/3389081.png"
+
+# 数据库配置
+database:
+  db_path: "data.db"
