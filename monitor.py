@@ -8,7 +8,7 @@ import random
 from datetime import datetime
 from playwright.async_api import async_playwright
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 # 加载配置
 def load_config():
